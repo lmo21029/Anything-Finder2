@@ -31,28 +31,31 @@
       .form-search{
         display: flex;
       }
+      
     </style>
+ 
+    <iron-ajax
+    id="searchAll"
+    url="http://jsonplaceholder.typicode.com/users"
+    handle-as="json"
+    last-response="{{list}}"
+    debounce-duration="300">
+  </iron-ajax>
 
     <p>Bienvenido al buscador de peliculas</p>
 
     <div class="form-search">
-      <paper-input placeholder="Search..." bind-value="[[topic]]"></paper-input>
-      <paper-button on-click="doSearch">Start</paper-button>
+      <paper-input id="valueSearch" placeholder="Search..." bind-value="[[topic]]"></paper-input>
+      <paper-button on-click="_handleResponse">Start</paper-button>
     </div>
 
     <iron-list items="[[list]]" as="element">
       <template>
-        <span>[[element.name]] - [[element.age]]</span>
+        <span>[[element.id]] -- [[element.name]] -- [[element.username]] -- [[element.email]]</span>
+        
+       
       </template>
     </iron-list>
-
-    <iron-ajax
-    auto
-    url="https://jsonplaceholder.typicode.com/users"
-    handle-as="json"
-    on-response="doSearch"
-    debounce-duration="300">
-    </iron-ajax>
   </template>
 
   <script>
@@ -71,22 +74,17 @@
           },
           list: {
             type: Array,
-            value: function () {
-              return [
-                { name: "FONT", age: "23" },
-                { name: "MINALBA", age: "43" }
-              ]
-            }
           }
         }
       }
 
-      doSearch(topic) {
+      _handleResponse() {
         //alert('hacer búsqueda');
         // const url = `https://www.omdbapi.com/?s=${filmName}&plot=full&apikey=e477ed6a`;
-        console.log('hacer busqueda');
+        this.$.searchAll.generateRequest();
 
       }
+
 
     }
     customElements.define(AnythingFinder.is, AnythingFinder);
