@@ -1,28 +1,26 @@
 <link rel="import" href="bower_components/iron-list/iron-list.html">
-<link rel="import" href="./bower_components/paper-button/paper-button.html">
-<link rel="import" href="./bower_components/paper-input/paper-input.html">
-<link rel="import" href="./bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="anything-finder">
+
   <template>
     <style>
       :host {
         display: block;
-        border: solid 1px red;
+        border: solid 2px red;
         padding: 1rem;
       }
 
       iron-list {
         border: solid 1px black;
         padding: 1rem;
-        height: 100%;
-        overflow: auto;
       }
-      
 
       paper-button {
-        background: lightgrey;
+        background: lightgreen;
         margin: 15px;
       }
 
@@ -39,48 +37,48 @@
       .form-search {
         display: flex;
       }
-      .item {
-          height: 400px;
-          width: 300px;
-        }
 
-        .image{
-          height: 350px;
-          width: 250px;
-        }
+      .poster-size {
+        height: 350px;
+        width: 250px;
+      }
+      li{
+        list-style: none;
+      }
+      ul{
+        padding: 0px;
+        margin-top: 0px;
+      }
     </style>
 
-    <iron-ajax
-      id="searchAll"
-      url="https://www.omdbapi.com/?s=[[film]]&plot=full&apikey=e477ed6a"
-      handle-as="json"
-      last-response="{{list}}"
-      loading="{{loading}}"
-      debounce-duration="300">
+    <iron-ajax id="searchAll" url="https://www.omdbapi.com/?s=[[film]]&plot=full&apikey=e477ed6a" handle-as="json"
+      last-response="{{list}}" loading="{{loading}}" debounce-duration="300">
     </iron-ajax>
 
-    <p>Bienvenido al buscador de [[topic]]s</p>
+    <h2>Welcome to the [[topic]] search</h2>
 
     <div class="form-search">
-      <paper-input label="[[topic]]"  id="film" value="{{film}}"></paper-input>
-      <paper-button on-click="doSearch" disabled="true" id="start" raised>Start</paper-button>
+      <paper-input label="[[topic]]" id="film" value="{{film}}"></paper-input>
+      <paper-button on-click="doSearch" disabled="true" id="start" raised>Search</paper-button>
     </div>
 
     <paper-spinner alt="loading" active="[[loading]]"></paper-spinner>
 
-    <iron-list items="[[list.Search]]" as="element">
+    <iron-list items="[[list.Search]]" as="film">
       <template>
-        <div class="item">
           <div>
-            <img class="image" src="[[element.Poster]]" alt="">
+            <ul>
+              <li>
+                <img class="poster-size" src="[[film.Poster]]" alt="">
+              </li>
+              <li>
+                [[film.Title]] -- [[film.Year]]
+              </li>
+            </ul>
           </div>
-          <div>
-              [[element.Title]] -- [[element.Year]]
-          </div>
-        </div>
-        
       </template>
     </iron-list>
+
   </template>
 
   <script>
@@ -90,7 +88,7 @@
         return {
           topic: {
             type: String,
-            value: 'Pelicula',
+            value: 'Movie',
           },
           film: {
             type: String,
@@ -105,7 +103,7 @@
         }
       }
 
-      ready(){
+      ready() {
         super.ready();
         this.$.film.addEventListener('value-changed', this._validateButton.bind(this));
       }
@@ -113,19 +111,19 @@
       doSearch() {
         if (!(this.film == '')) {
           this.$.searchAll.generateRequest();
-        } 
+        }
       }
 
-      _validateButton(){
-        var button =this.$.start;
-        if(this.film==''){
-          button.disabled=true;
+      _validateButton() {
+        var button = this.$.start;
+        if (this.film == '') {
+          button.disabled = true;
         }
-        else{
-          button.disabled=false;
+        else {
+          button.disabled = false;
         }
       }
-      
+
     }
     customElements.define(AnythingFinder.is, AnythingFinder);
   </script>
