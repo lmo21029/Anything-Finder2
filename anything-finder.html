@@ -17,7 +17,9 @@
         border: solid 1px black;
         padding: 1rem;
         height: 100%;
+        overflow: auto;
       }
+      
 
       paper-button {
         background: lightgrey;
@@ -37,6 +39,15 @@
       .form-search {
         display: flex;
       }
+      .item {
+          height: 400px;
+          width: 300px;
+        }
+
+        .image{
+          height: 350px;
+          width: 250px;
+        }
     </style>
 
     <iron-ajax
@@ -59,7 +70,15 @@
 
     <iron-list items="[[list.Search]]" as="element">
       <template>
-        <div class="item">[[element.Title]] -- [[element.Year]]</div>
+        <div class="item">
+          <div>
+            <img class="image" src="[[element.Poster]]" alt="">
+          </div>
+          <div>
+              [[element.Title]] -- [[element.Year]]
+          </div>
+        </div>
+        
       </template>
     </iron-list>
   </template>
