@@ -1,13 +1,12 @@
-<link rel="import" href="bower_components/iron-input/iron-input.html">
 <link rel="import" href="bower_components/iron-list/iron-list.html">
 <link rel="import" href="./bower_components/paper-button/paper-button.html">
 <link rel="import" href="./bower_components/paper-input/paper-input.html">
+<link rel="import" href="./bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="anything-finder">
-
   <template>
     <style>
-      /*add component styles here*/
       :host {
         display: block;
         border: solid 1px red;
@@ -17,75 +16,97 @@
       iron-list {
         border: solid 1px black;
         padding: 1rem;
-        margin-top: 1rem;
+        height: 100%;
       }
 
       paper-button {
         background: lightgrey;
         margin: 15px;
       }
-      paper-input{
-        display:block;
+
+      paper-input {
+        display: block;
         width: 50%;
       }
-      .form-search{
+
+      paper-spinner {
+        margin-left: 45%;
+        margin-bottom: 2px;
+      }
+
+      .form-search {
         display: flex;
       }
-      
     </style>
- 
-    <iron-ajax
-    id="searchAll"
-    url="http://jsonplaceholder.typicode.com/users"
-    handle-as="json"
-    last-response="{{list}}"
-    debounce-duration="300">
-  </iron-ajax>
 
-    <p>Bienvenido al buscador de peliculas</p>
+    <iron-ajax
+      id="searchAll"
+      url="https://www.omdbapi.com/?s=[[film]]&plot=full&apikey=e477ed6a"
+      handle-as="json"
+      last-response="{{list}}"
+      loading="{{loading}}"
+      debounce-duration="300">
+    </iron-ajax>
+
+    <p>Bienvenido al buscador de [[topic]]s</p>
 
     <div class="form-search">
-      <paper-input id="valueSearch" placeholder="Search..." bind-value="[[topic]]"></paper-input>
-      <paper-button on-click="_handleResponse">Start</paper-button>
+      <paper-input label="[[topic]]"  id="film" value="{{film}}"></paper-input>
+      <paper-button on-click="doSearch" disabled="true" id="start" raised>Start</paper-button>
     </div>
 
-    <iron-list items="[[list]]" as="element">
+    <paper-spinner alt="loading" active="[[loading]]"></paper-spinner>
+
+    <iron-list items="[[list.Search]]" as="element">
       <template>
-        <span>[[element.id]] -- [[element.name]] -- [[element.username]] -- [[element.email]]</span>
-        
-       
+        <div class="item">[[element.Title]] -- [[element.Year]]</div>
       </template>
     </iron-list>
   </template>
 
   <script>
-
-    // TO DO: replace iron-input && button to paper-input && paper-button
-
     class AnythingFinder extends Polymer.Element {
-
       static get is() { return "anything-finder"; }
-
       static get properties() {
         return {
-          /*add your component properties here !!!*/
           topic: {
             type: String,
+            value: 'Pelicula',
+          },
+          film: {
+            type: String,
+            value: '',
           },
           list: {
             type: Array,
+          },
+          loading: {
+            type: Boolean
           }
         }
       }
 
-      _handleResponse() {
-        //alert('hacer búsqueda');
-        // const url = `https://www.omdbapi.com/?s=${filmName}&plot=full&apikey=e477ed6a`;
-        this.$.searchAll.generateRequest();
-
+      ready(){
+        super.ready();
+        this.$.film.addEventListener('value-changed', this._validateButton.bind(this));
       }
 
+      doSearch() {
+        if (!(this.film == '')) {
+          this.$.searchAll.generateRequest();
+        } 
+      }
 
+      _validateButton(){
+        var button =this.$.start;
+        if(this.film==''){
+          button.disabled=true;
+        }
+        else{
+          button.disabled=false;
+        }
+      }
+      
     }
     customElements.define(AnythingFinder.is, AnythingFinder);
   </script>
