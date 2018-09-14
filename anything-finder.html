@@ -42,12 +42,11 @@
         height: 350px;
         width: 250px;
       }
-      li{
-        list-style: none;
-      }
-      ul{
-        padding: 0px;
-        margin-top: 0px;
+      .movies-item{
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-gap: 1em;
+        justify-items: center;
       }
     </style>
 
@@ -60,21 +59,20 @@
     <div class="form-search">
       <paper-input label="[[topic]]" id="film" value="{{film}}"></paper-input>
       <paper-button on-click="doSearch" disabled="true" id="start" raised>Search</paper-button>
+      <!-- <paper-button on-click="searchFilm" id="start" raised>Search2</paper-button> -->
     </div>
 
     <paper-spinner alt="loading" active="[[loading]]"></paper-spinner>
 
     <iron-list items="[[list.Search]]" as="film">
       <template>
-          <div>
-            <ul>
-              <li>
-                <img class="poster-size" src="[[film.Poster]]" alt="">
-              </li>
-              <li>
-                [[film.Title]] -- [[film.Year]]
-              </li>
-            </ul>
+          <div class="movies-item">
+            <div>
+              <img class="poster-size" src="[[film.Poster]]" alt="">
+            </div>
+            <div>
+              <span>[[film.Title]] -- [[film.Year]]</span>
+            </div>
           </div>
       </template>
     </iron-list>
@@ -123,6 +121,10 @@
           button.disabled = false;
         }
       }
+
+      // onSearchClicked() {
+      //   this.dispatchEvent(new CustomEvent('searchFilm', { composed: true, detail: { value: this.film } }));
+      // }
 
     }
     customElements.define(AnythingFinder.is, AnythingFinder);

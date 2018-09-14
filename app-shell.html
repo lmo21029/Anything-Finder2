@@ -17,10 +17,19 @@
         margin: 1rem;
       }
     </style>
-    
+
+    <!-- <button on-click="sayHello"> clícame para saludar </button> -->
+
     <iron-ajax></iron-ajax>
 
+    <!-- <iron-ajax id="searchAll" url="https://www.omdbapi.com/?s=[[film]]&plot=full&apikey=e477ed6a" handle-as="json"
+    last-response="{{list}}" loading="{{loading}}" debounce-duration="300">
+  </iron-ajax> -->
+
+    <!-- <anything-finder></anything-finder> -->
+
     <anything-finder></anything-finder>
+
     
   </template>
 
@@ -32,6 +41,9 @@
       static get properties() {
         return {
           /*add your component properties here !!!*/
+          // list:{
+          //   type:Array,
+          // }
         }
       }
 
@@ -39,6 +51,18 @@
         console.log('hola!');
         alert('hoooola!');
       }
+      
+      // ready(){
+      //   super.ready();
+      //   this.addEventListener('searchFilm',this._doSearch)
+      // }
+
+      // _doSearch() {
+      //   if (!(this.film == '')) {
+      //     this.$.searchAll.generateRequest();
+      //   }
+      // }
+
     }
     customElements.define(AppShell.is, AppShell);
   </script>
