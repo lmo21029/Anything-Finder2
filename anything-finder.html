@@ -1,8 +1,6 @@
 <link rel="import" href="bower_components/iron-list/iron-list.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-input/paper-input.html">
-<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="anything-finder">
 
@@ -11,11 +9,6 @@
       :host {
         display: block;
         border: solid 2px red;
-        padding: 1rem;
-      }
-
-      iron-list {
-        border: solid 1px black;
         padding: 1rem;
       }
 
@@ -29,53 +22,47 @@
         width: 50%;
       }
 
-      paper-spinner {
-        margin-left: 45%;
-        margin-bottom: 2px;
-      }
-
       .form-search {
         display: flex;
       }
 
-      .poster-size {
-        height: 350px;
+      .item-poster {
+        height: 340px;
         width: 250px;
       }
-      .movies-item{
+
+      .item-title {
+        width: 250px;
+      }
+
+      .result-list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         grid-gap: 1em;
-        justify-items: center;
+        border: solid 1px black;
+        padding: 1rem;
       }
     </style>
-
-    <iron-ajax id="searchAll" url="https://www.omdbapi.com/?s=[[film]]&plot=full&apikey=e477ed6a" handle-as="json"
-      last-response="{{list}}" loading="{{loading}}" debounce-duration="300">
-    </iron-ajax>
 
     <h2>Welcome to the [[topic]] search</h2>
 
     <div class="form-search">
-      <paper-input label="[[topic]]" id="film" value="{{film}}"></paper-input>
-      <paper-button on-click="doSearch" disabled="true" id="start" raised>Search</paper-button>
-      <!-- <paper-button on-click="searchFilm" id="start" raised>Search2</paper-button> -->
+      <paper-input label="[[topic]]" value="{{topicValue}}"></paper-input>
+      <paper-button on-click="buttonSearch" disabled="true" raised>Search</paper-button>
     </div>
 
-    <paper-spinner alt="loading" active="[[loading]]"></paper-spinner>
-
-    <iron-list items="[[list.Search]]" as="film">
-      <template>
-          <div class="movies-item">
-            <div>
-              <img class="poster-size" src="[[film.Poster]]" alt="">
-            </div>
-            <div>
-              <span>[[film.Title]] -- [[film.Year]]</span>
-            </div>
+    <div class="result-list">
+      <template is="dom-repeat" items="{{list.Search}}" as="film">
+        <div class="item-any">
+          <div>
+            <img class="item-poster" src="[[film.Poster]]" alt="">
           </div>
+          <div class="item-title">
+            <span>[[film.Title]] -- [[film.Year]]</span>
+          </div>
+        </div>
       </template>
-    </iron-list>
+    </div>
 
   </template>
 
@@ -88,43 +75,30 @@
             type: String,
             value: 'Movie',
           },
-          film: {
+          topicValue: {
             type: String,
             value: '',
+            observer: '_validateButton',
           },
           list: {
             type: Array,
           },
-          loading: {
-            type: Boolean
-          }
         }
       }
 
-      ready() {
-        super.ready();
-        this.$.film.addEventListener('value-changed', this._validateButton.bind(this));
-      }
-
-      doSearch() {
-        if (!(this.film == '')) {
-          this.$.searchAll.generateRequest();
-        }
+      buttonSearch() {
+        this.dispatchEvent(new CustomEvent('sendValue', { composed: true, detail: { value: this.topicValue } }));
       }
 
       _validateButton() {
-        var button = this.$.start;
-        if (this.film == '') {
+        var button = this.shadowRoot.querySelector('paper-button');
+        if ((this.topicValue == '')) {
           button.disabled = true;
         }
         else {
           button.disabled = false;
         }
       }
-
-      // onSearchClicked() {
-      //   this.dispatchEvent(new CustomEvent('searchFilm', { composed: true, detail: { value: this.film } }));
-      // }
 
     }
     customElements.define(AnythingFinder.is, AnythingFinder);

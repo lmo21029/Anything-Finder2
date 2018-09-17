@@ -18,50 +18,42 @@
       }
     </style>
 
-    <!-- <button on-click="sayHello"> clícame para saludar </button> -->
+    <iron-ajax
+      id="searchAll"
+      url="https://www.omdbapi.com/?s={{film}}&plot=full&apikey=e477ed6a"
+      handle-as="json"
+      last-response="{{list}}"
+      debounce-duration="300">
+    </iron-ajax>
 
-    <iron-ajax></iron-ajax>
+    <anything-finder list={{list}}></anything-finder>
 
-    <!-- <iron-ajax id="searchAll" url="https://www.omdbapi.com/?s=[[film]]&plot=full&apikey=e477ed6a" handle-as="json"
-    last-response="{{list}}" loading="{{loading}}" debounce-duration="300">
-  </iron-ajax> -->
-
-    <!-- <anything-finder></anything-finder> -->
-
-    <anything-finder></anything-finder>
-
-    
   </template>
 
   <script>
     class AppShell extends Polymer.Element {
-      
       static get is() { return "app-shell"; }
-      
       static get properties() {
         return {
-          /*add your component properties here !!!*/
-          // list:{
-          //   type:Array,
-          // }
+          film:{
+            type:String,
+          },
+          list:{
+            type:Array,
+          }
         }
       }
 
-      sayHello() {
-        console.log('hola!');
-        alert('hoooola!');
+      ready(){
+        super.ready();
+        this.addEventListener('sendValue', this._doSearch.bind(this));
       }
-      
-      // ready(){
-      //   super.ready();
-      //   this.addEventListener('searchFilm',this._doSearch)
-      // }
 
-      // _doSearch() {
-      //   if (!(this.film == '')) {
-      //     this.$.searchAll.generateRequest();
-      //   }
-      // }
+      _doSearch(event){
+        console.log("valor desd el ANY: "+event.detail.value);
+        this.film =event.detail.value;
+        this.shadowRoot.querySelector('iron-ajax').generateRequest();
+      }
 
     }
     customElements.define(AppShell.is, AppShell);
