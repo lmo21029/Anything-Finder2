@@ -13,8 +13,10 @@
       }
 
       paper-button {
+        --paper-button: {
+        border-radius:20px;
+        };
         background: lightgreen;
-        margin: 15px;
       }
 
       paper-input {
@@ -48,7 +50,7 @@
 
     <div class="form-search">
       <paper-input label="[[topic]]" value="{{topicValue}}"></paper-input>
-      <paper-button on-click="buttonSearch" disabled="true" raised>Search</paper-button>
+      <paper-button on-click="buttonSearch" disabled$="[[_isEmptyTopic]]" raised>Search</paper-button>
     </div>
 
     <div class="result-list">
@@ -78,26 +80,24 @@
           topicValue: {
             type: String,
             value: '',
-            observer: '_validateButton',
+            observer: '_onTopicChanged',
           },
           list: {
             type: Array,
           },
+          _isEmptyTopic: {
+            type: Boolean,
+            value: false
+          }
         }
       }
 
       buttonSearch() {
-        this.dispatchEvent(new CustomEvent('sendValue', { composed: true, detail: { value: this.topicValue } }));
+        this.dispatchEvent(new CustomEvent('searchValue', { composed: true, detail: { value: this.topicValue } }));
       }
 
-      _validateButton() {
-        var button = this.shadowRoot.querySelector('paper-button');
-        if ((this.topicValue == '')) {
-          button.disabled = true;
-        }
-        else {
-          button.disabled = false;
-        }
+      _onTopicChanged() {
+        this._isEmptyTopic = newTopicValue === '';
       }
 
     }

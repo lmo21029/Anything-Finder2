@@ -46,11 +46,10 @@
 
       ready(){
         super.ready();
-        this.addEventListener('sendValue', this._doSearch.bind(this));
+        this.addEventListener('searchValue', this._doSearch.bind(this));
       }
 
       _doSearch(event){
-        console.log("valor desd el ANY: "+event.detail.value);
         this.film =event.detail.value;
         this.shadowRoot.querySelector('iron-ajax').generateRequest();
       }
